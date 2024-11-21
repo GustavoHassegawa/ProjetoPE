@@ -7,6 +7,12 @@
 ---
 
 ## Recursos
+- Linguagem C;
+- Bibiotecas da linguagem C:
+    - stdio.h;
+    - string.h;
+    - stdlib.h;
+    - math.h.
 
 ---
 
