@@ -3,8 +3,8 @@
 
 typedef struct node {
     int digit;
-    Node prev;
-    Node next;
+    struct node *prev;
+    struct node *next;
 } *Node;
 
 typedef struct bignumber {
@@ -15,5 +15,11 @@ typedef struct bignumber {
 BigNumber create_bignumber();
 
 void add_digit(BigNumber number, int digit);
+
+int return_digit(char character);
+
+BigNumber char_bignumber(char *string);
+
+void print_bignumber(BigNumber number);
 
 #endif

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "bignumber.h"
 
 //Cria um numerão vazio
@@ -28,4 +29,36 @@ void add_digit(BigNumber number, int digit) {
     number->end = new_node;
 }
 
+/*Retorna o dígito, se não for um número retorna '-1', visto que o sinal será
+ *definido em outro momento, agora estou pensando apenas no valor do digito.*/
+int return_digit(char character) {
+    if (character >= '0' && character <= '9')
+        return character - '0';
+    else
+        return -1;
+}
 
+//Cria um bignumber a partir de uma srting
+BigNumber char_bignumber(char *string) {
+    BigNumber number = create_bignumber();
+    for (int i = 0; i < strlen(string); i++) {
+        if (return_digit(string[i]) != -1) {
+            add_digit(number, return_digit(string[i]));
+        }
+        else{
+            printf("NOT AN INT");
+            break;
+        }
+    }
+    return number;
+}
+
+//Imprime um bignumber
+void print_bignumber(BigNumber number) {
+    Node currentNode = number->begin;
+    while (currentNode != NULL) {
+        printf("%d", currentNode->digit);
+        currentNode = currentNode->next;
+    }
+    printf("\n");
+}
