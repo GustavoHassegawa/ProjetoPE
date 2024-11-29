@@ -40,9 +40,15 @@ int return_digit(char character) {
 
 //Cria um bignumber a partir de uma srting
 BigNumber char_bignumber(char *string) {
+    int zero_to_the_left = 1;
     BigNumber number = create_bignumber();
+    
     for (int i = 0; i < strlen(string); i++) {
-        if (return_digit(string[i]) != -1) {
+        //Verifica se é um zero a esquerda
+        if (zero_to_the_left == 1 && return_digit(string[i]) != -1) 
+            zero_to_the_left = 0;
+
+        if (zero_to_the_left == 0 && return_digit(string[i]) != -1) {
             add_digit(number, return_digit(string[i]));
         }
         else{
@@ -52,6 +58,8 @@ BigNumber char_bignumber(char *string) {
     }
     return number;
 }
+
+
 
 //Imprime um bignumber
 void print_bignumber(BigNumber number) {
