@@ -62,3 +62,12 @@ void print_bignumber(BigNumber number) {
     }
     printf("\n");
 }
+
+//libera a memória do bignumber
+void erase_bignumber(BigNumber number) {
+    Node currentNode = number->begin;
+    while (currentNode != NULL) {
+        free(currentNode);
+        currentNode = currentNode->next;
+    }
+}
