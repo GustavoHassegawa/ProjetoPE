@@ -22,4 +22,6 @@ BigNumber char_bignumber(char *string);
 
 void print_bignumber(BigNumber number);
 
+void erase_bignumber(BigNumber number);
+
 #endif
