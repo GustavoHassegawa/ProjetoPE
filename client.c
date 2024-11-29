@@ -19,6 +19,8 @@ int main() {
     
     print_bignumber(number);
 
+    erase_bignumber(number);
+    free(number);
     free(bignumberString);
     return 0;
 }
