@@ -68,7 +68,6 @@ void read_bignumber(BigNumber number) {
             add_digit(number, return_digit(character));
         } else {
             printf("\nEntrada inválida! Apenas números são permitidos.\n");
-            return 1;
         }
     }
 }
