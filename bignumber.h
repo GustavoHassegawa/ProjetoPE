@@ -2,7 +2,7 @@
 #define BIGNUMBER_H
 
 typedef struct node {
-    int digit;
+    short int digit;
     struct node *prev;
     struct node *next;
 } *Node;
