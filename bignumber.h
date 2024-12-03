@@ -20,6 +20,8 @@ int return_digit(char character);
 
 BigNumber char_bignumber(char *string);
 
+void read_bignumber(BigNumber number);
+
 void print_bignumber(BigNumber number);
 
 void erase_bignumber(BigNumber number);

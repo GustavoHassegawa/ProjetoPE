@@ -4,23 +4,14 @@
 #include "bignumber.h"
 
 int main() {
-    char *bignumberString;
-    int tamanho = 0;
-    BigNumber number;
-
-    printf("Tamanho do numero: ");
-    scanf("%d", &tamanho);
-    getchar();
-    bignumberString = malloc((tamanho + 1) * sizeof(char));
+    BigNumber number = create_bignumber();
     
     printf("Insira o numero: ");
-    fgets(bignumberString, tamanho + 1, stdin);
-    number = char_bignumber(bignumberString);
+    read_bignumber(number);
     
     print_bignumber(number);
-
+    
     erase_bignumber(number);
     free(number);
-    free(bignumberString);
     return 0;
 }

@@ -12,7 +12,7 @@ BigNumber create_bignumber() {
     return number;
 }
 
-//Adiciona um novo nó ao BigNumber
+//Adiciona um novo nó ao BigNumber no final
 void add_digit(BigNumber number, int digit) {
     Node new_node = malloc(sizeof(Node));
 
@@ -59,7 +59,19 @@ BigNumber char_bignumber(char *string) {
     return number;
 }
 
+//Le o bignumber
+void read_bignumber(BigNumber number) {
+    char character;
 
+    while ((character = getchar()) != '\n') {
+        if (character >= '0' && character <= '9') {
+            add_digit(number, return_digit(character));
+        } else {
+            printf("\nEntrada inválida! Apenas números são permitidos.\n");
+            return 1;
+        }
+    }
+}
 
 //Imprime um bignumber
 void print_bignumber(BigNumber number) {
