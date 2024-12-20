@@ -10,11 +10,12 @@ typedef struct node {
 typedef struct bignumber {
     Node begin;
     Node end;
+    int size;
 } *BigNumber;
 
 BigNumber create_bignumber();
 
-void add_digit(BigNumber number, int digit);
+void add_digit_end(BigNumber number, int digit);
 
 int return_digit(char character);
 
@@ -25,5 +26,9 @@ void read_bignumber(BigNumber number);
 void print_bignumber(BigNumber number);
 
 void erase_bignumber(BigNumber number);
+
+BigNumber sum_bignumber(BigNumber number1, BigNumber number2);
+
+void node_modularizer(BigNumber number);
 
 #endif

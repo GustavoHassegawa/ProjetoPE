@@ -7,4 +7,4 @@ client.o: client.c bignumber.h
 	gcc -std=c99 -Wall -Wvla -g -c client.c
 
 bignumber.o: bignumber.c bignumber.h
-	gcc -std=c99 -Wall -Werror -Wvla -c bignumber.c
+	gcc -std=c99 -Wall -Werror -Wvla -g -c bignumber.c

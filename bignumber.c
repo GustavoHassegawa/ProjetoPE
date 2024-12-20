@@ -7,13 +7,14 @@
 BigNumber create_bignumber() {
     BigNumber number = malloc(sizeof(BigNumber));
 
+    number->size = 0;
     number->begin = NULL;
     number->end = NULL;
     return number;
 }
 
 //Adiciona um novo nó ao BigNumber no final
-void add_digit(BigNumber number, int digit) {
+void add_digit_end(BigNumber number, int digit) {
     Node new_node = malloc(sizeof(Node));
 
     new_node->digit = digit;
@@ -25,7 +26,7 @@ void add_digit(BigNumber number, int digit) {
     } else {
         number->begin = new_node;
     }
-    
+    number->size++;
     number->end = new_node;
 }
 
@@ -42,6 +43,7 @@ void add_digit_head(BigNumber number, int digit) {
     } else {
         number->end = new_node;
     }
+    number->size++;
     number->begin = new_node;
 }
 
@@ -83,7 +85,7 @@ void read_bignumber(BigNumber number) {
 
     while ((character = getchar()) != '\n')
         if (character >= '0' && character <= '9') 
-            add_digit(number, return_digit(character));
+            add_digit_end(number, return_digit(character));
 }
 
 //Imprime um bignumber
@@ -99,18 +101,54 @@ void print_bignumber(BigNumber number) {
 //libera a memória do bignumber
 void erase_bignumber(BigNumber number) {
     Node currentNode = number->begin;
+    Node temp;
     while (currentNode != NULL) {
+        temp = currentNode->next;
         free(currentNode);
-        currentNode = currentNode->next;
+        currentNode = temp;
+    }
+}
+
+/*função modulariza todos os nós do bignumber para que os digitos sejam somente 
+ *de 0 a 9*/
+void node_modularizer(BigNumber number) {
+    Node currentNode = number->end;
+    int addNext;
+
+    while (currentNode != NULL) {
+        if (currentNode->digit > 9) {
+            addNext = currentNode->digit/10;
+            currentNode->digit %= 10;
+
+            if (currentNode->prev == NULL)
+                add_digit_head(number, 0);
+
+            currentNode->prev->digit += addNext;
+        }
+        currentNode = currentNode->prev;
     }
 }
 
 BigNumber sum_bignumber(BigNumber number1, BigNumber number2) {
     Node currentNode1 = number1->end, currentNode2 = number2->end;
-    int sum, sum_next_house = 0;
+    short int sum;
+    BigNumber answer = create_bignumber();
 
     while (currentNode1 != NULL || currentNode2 != NULL) {
-        sum = currentNode1->digit + currentNode2->digit;
+        if (currentNode1 == NULL && currentNode2 != NULL) {
+            sum = currentNode2->digit;
+            currentNode2 = currentNode2->prev;
+        } else if (currentNode1!= NULL && currentNode2 == NULL) {
+            sum = currentNode1->digit;
+            currentNode1 = currentNode1->prev;
+        } else {
+            sum = currentNode1->digit + currentNode2->digit;
+            currentNode1 = currentNode1->prev;
+            currentNode2 = currentNode2->prev;
+        }
+        add_digit_head(answer, sum);
+    }        
+    node_modularizer(answer);
 
-    }
+    return answer;
 }

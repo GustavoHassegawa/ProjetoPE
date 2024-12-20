@@ -4,14 +4,23 @@
 #include "bignumber.h"
 
 int main() {
-    BigNumber number = create_bignumber();
+    BigNumber number1 = create_bignumber();
+    BigNumber number2 = create_bignumber();
+
+    printf("Insira o numero 1: ");
+    read_bignumber(number1);
+    printf("Insira o numero 2: ");
+    read_bignumber(number2);
+
+    BigNumber answer = sum_bignumber(number1, number2);
     
-    printf("Insira o numero: ");
-    read_bignumber(number);
-    
-    print_bignumber(number);
-    
-    erase_bignumber(number);
-    free(number);
+    print_bignumber(answer);
+
+    erase_bignumber(number1);
+    erase_bignumber(number2);
+    erase_bignumber(answer);
+    free(number1);
+    free(number2);
+    free(answer);
     return 0;
 }
