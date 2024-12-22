@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "bignumber.h"
 
 int main() {
@@ -12,8 +11,7 @@ int main() {
     printf("Insira o numero 2: ");
     read_bignumber(number2);
 
-    BigNumber answer = sum_bignumber(number1, number2);
-    
+    BigNumber answer = sub_bignumber(number1, number2);
     print_bignumber(answer);
 
     erase_bignumber(number1);

@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <stdbool.h>
 #include "bignumber.h"
 
 //Cria um numerão vazio
@@ -47,6 +47,24 @@ void add_digit_head(BigNumber number, int digit) {
     number->begin = new_node;
 }
 
+//Apaga o digito do início do bignumber
+void erase_digit_head(BigNumber number) {
+    Node temp = number->begin->next;
+    free(number->begin);
+    number->begin = temp; 
+    number->begin->prev = NULL;
+}
+
+//Apaga o digito do final do bignumber
+void erase_digit_end(BigNumber number) {
+    Node temp = number->end->prev;
+    free(number->begin);
+    number->end = temp;
+    number->end->next = NULL;
+    number->size--;
+}
+
+
 /*Retorna o dígito, se não for um número retorna '-1', visto que o sinal será
  *definido em outro momento, agora estou pensando apenas no valor do digito.*/
 int return_digit(char character) {
@@ -91,6 +109,8 @@ void read_bignumber(BigNumber number) {
 //Imprime um bignumber
 void print_bignumber(BigNumber number) {
     Node currentNode = number->begin;
+    if (number->negative == true)
+        printf("-");
     while (currentNode != NULL) {
         printf("%d", currentNode->digit);
         currentNode = currentNode->next;
@@ -109,14 +129,37 @@ void erase_bignumber(BigNumber number) {
     }
 }
 
+void delete_left_zeros(BigNumber number) {
+    Node currentNode = number->begin;
+    while (currentNode != number->end) {
+        if (currentNode->digit != 0)
+            break;
+        currentNode = currentNode->next;
+        erase_digit_head(number);
+    }
+}
+
 /*função modulariza todos os nós do bignumber para que os digitos sejam somente 
  *de 0 a 9*/
 void node_modularizer(BigNumber number) {
     Node currentNode = number->end;
-    int addNext;
 
+    delete_left_zeros(number);
     while (currentNode != NULL) {
+
+        if (currentNode->digit < 0) {
+            if (currentNode->prev == NULL) {
+                currentNode->digit *= -1;
+                number->negative = true;
+            } else {    
+                currentNode->prev->digit--;
+                currentNode->digit += 10;
+            }
+        }
+
         if (currentNode->digit > 9) {
+            int addNext;
+
             addNext = currentNode->digit/10;
             currentNode->digit %= 10;
 
@@ -125,22 +168,28 @@ void node_modularizer(BigNumber number) {
 
             currentNode->prev->digit += addNext;
         }
+
         currentNode = currentNode->prev;
     }
+    delete_left_zeros(number);
 }
 
+//Faz a soma de um bignumber por um outro bignumber.
 BigNumber sum_bignumber(BigNumber number1, BigNumber number2) {
     Node currentNode1 = number1->end, currentNode2 = number2->end;
     short int sum;
     BigNumber answer = create_bignumber();
 
     while (currentNode1 != NULL || currentNode2 != NULL) {
+
         if (currentNode1 == NULL && currentNode2 != NULL) {
             sum = currentNode2->digit;
             currentNode2 = currentNode2->prev;
+
         } else if (currentNode1!= NULL && currentNode2 == NULL) {
             sum = currentNode1->digit;
             currentNode1 = currentNode1->prev;
+
         } else {
             sum = currentNode1->digit + currentNode2->digit;
             currentNode1 = currentNode1->prev;
@@ -150,5 +199,37 @@ BigNumber sum_bignumber(BigNumber number1, BigNumber number2) {
     }        
     node_modularizer(answer);
 
+    return answer;
+}
+
+BigNumber sub_bignumber(BigNumber minuend, BigNumber subtrahend) {
+    Node currentNodeMinuend = minuend->end, currentNodeSubtra = subtrahend->end;
+    short int sub;
+    BigNumber answer = create_bignumber();
+
+    if (subtrahend->size > minuend->size) {
+        answer = sub_bignumber(subtrahend, minuend);
+        answer->negative = true;
+        return answer;
+    }
+
+    while (currentNodeMinuend != NULL || currentNodeSubtra != NULL) {
+
+        if (currentNodeMinuend == NULL && currentNodeSubtra != NULL) {
+            sub = -currentNodeSubtra->digit;
+            currentNodeSubtra = currentNodeSubtra->prev;
+
+        } else if (currentNodeMinuend != NULL && currentNodeSubtra == NULL) {
+            sub = currentNodeMinuend->digit;
+            currentNodeMinuend = currentNodeMinuend->prev;
+
+        } else {
+            sub = currentNodeMinuend->digit - currentNodeSubtra->digit;
+            currentNodeSubtra = currentNodeSubtra->prev;
+            currentNodeMinuend = currentNodeMinuend->prev;
+        }
+        add_digit_head(answer, sub);
+    }
+    node_modularizer(answer);
     return answer;
 }

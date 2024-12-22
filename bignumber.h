@@ -1,5 +1,7 @@
 #ifndef BIGNUMBER_H
 #define BIGNUMBER_H
+#include <stdio.h>
+#include <stdbool.h>
 
 typedef struct node {
     short int digit;
@@ -11,6 +13,7 @@ typedef struct bignumber {
     Node begin;
     Node end;
     int size;
+    bool negative;
 } *BigNumber;
 
 BigNumber create_bignumber();
@@ -29,6 +32,10 @@ void erase_bignumber(BigNumber number);
 
 BigNumber sum_bignumber(BigNumber number1, BigNumber number2);
 
+void delete_left_zeros(BigNumber number);
+
 void node_modularizer(BigNumber number);
+
+BigNumber sub_bignumber(BigNumber minuend, BigNumber subtrahend);
 
 #endif
