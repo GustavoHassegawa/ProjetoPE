@@ -20,6 +20,12 @@ BigNumber create_bignumber();
 
 void add_digit_end(BigNumber number, int digit);
 
+void add_digit_head(BigNumber number, int digit);
+
+void erase_digit_head(BigNumber number);
+
+void erase_digit_end(BigNumber number);
+
 int return_digit(char character);
 
 BigNumber char_bignumber(char *string);
@@ -37,5 +43,7 @@ void delete_left_zeros(BigNumber number);
 void node_modularizer(BigNumber number);
 
 BigNumber sub_bignumber(BigNumber minuend, BigNumber subtrahend);
+
+BigNumber identify(BigNumber numberA, BigNumber numberB, char operation);
 
 #endif

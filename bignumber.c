@@ -127,8 +127,10 @@ void erase_bignumber(BigNumber number) {
         free(currentNode);
         currentNode = temp;
     }
+    free(number);
 }
 
+//Elimina os zeros a esquerda.
 void delete_left_zeros(BigNumber number) {
     Node currentNode = number->begin;
     while (currentNode != number->end) {
@@ -202,10 +204,11 @@ BigNumber sum_bignumber(BigNumber number1, BigNumber number2) {
     return answer;
 }
 
+//Faz a subtração de um bignumber minuendo por um bignumber subtraendo
 BigNumber sub_bignumber(BigNumber minuend, BigNumber subtrahend) {
     Node currentNodeMinuend = minuend->end, currentNodeSubtra = subtrahend->end;
     short int sub;
-    BigNumber answer = create_bignumber();
+    BigNumber answer;
 
     if (subtrahend->size > minuend->size) {
         answer = sub_bignumber(subtrahend, minuend);
@@ -213,6 +216,8 @@ BigNumber sub_bignumber(BigNumber minuend, BigNumber subtrahend) {
         return answer;
     }
 
+    answer = create_bignumber();
+    
     while (currentNodeMinuend != NULL || currentNodeSubtra != NULL) {
 
         if (currentNodeMinuend == NULL && currentNodeSubtra != NULL) {
@@ -232,4 +237,15 @@ BigNumber sub_bignumber(BigNumber minuend, BigNumber subtrahend) {
     }
     node_modularizer(answer);
     return answer;
+}
+
+BigNumber identify(BigNumber numberA, BigNumber numberB, char operation) {
+    if (operation == '+')
+        return sum_bignumber(numberA, numberB);
+    else if (operation == '-')
+        return sub_bignumber(numberA, numberB);
+    else {
+        printf("NÃO IMPLEMENTADO");
+        return create_bignumber();
+    }
 }

@@ -2,23 +2,66 @@
 #include <stdlib.h>
 #include "bignumber.h"
 
+/*
 int main() {
-    BigNumber number1 = create_bignumber();
-    BigNumber number2 = create_bignumber();
+    BigNumber number1, number2;
+    char sinal;
 
-    printf("Insira o numero 1: ");
+    number1 = create_bignumber();
+    number2 = create_bignumber();
+
     read_bignumber(number1);
-    printf("Insira o numero 2: ");
     read_bignumber(number2);
+    scanf(" %c", &sinal);
+    
+    BigNumber answer = identify(number1, number2, sinal);
 
-    BigNumber answer = sub_bignumber(number1, number2);
     print_bignumber(answer);
-
     erase_bignumber(number1);
     erase_bignumber(number2);
     erase_bignumber(answer);
-    free(number1);
-    free(number2);
-    free(answer);
+
+    return 0;    
+}
+*/
+
+int main() {
+    BigNumber number1, number2;
+    BigNumber *vector = malloc(sizeof(BigNumber));
+    int i = 0;
+    int capacity = 1;
+    char sinal;
+
+    while(1) {
+        number1 = create_bignumber();
+        number2 = create_bignumber();
+
+        read_bignumber(number1);
+        read_bignumber(number2);
+        sinal = getchar();
+        getchar();
+
+        BigNumber answer = identify(number1, number2, sinal);
+        
+        i++;
+        if (i >=capacity) {
+            capacity *= 2;
+            vector = realloc(vector, capacity * sizeof(BigNumber));
+        }
+
+        vector[i - 1] = answer;
+        
+        erase_bignumber(number1);
+        erase_bignumber(number2);
+    }
+
+    for (int j = 0; j < i; j++) {
+        print_bignumber(vector[j]);
+        erase_bignumber(vector[j]);
+    }
+
+    free(vector);
+
     return 0;
 }
+
