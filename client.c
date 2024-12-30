@@ -37,6 +37,7 @@ int main() {
         number2 = create_bignumber();
 
         read_bignumber(number1);
+        if (number1->begin == NULL || number1->end == NULL) break;
         read_bignumber(number2);
         sinal = getchar();
         getchar();

@@ -101,7 +101,7 @@ BigNumber char_bignumber(char *string) {
 void read_bignumber(BigNumber number) {
     char character;
 
-    while ((character = getchar()) != '\n')
+    while ((character = getchar()) != '\n' && character != EOF)
         if (character >= '0' && character <= '9') 
             add_digit_end(number, return_digit(character));
 }
