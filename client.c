@@ -55,6 +55,8 @@ int main() {
         erase_bignumber(number1);
         erase_bignumber(number2);
     }
+    erase_bignumber(number1);
+    erase_bignumber(number2);
 
     for (int j = 0; j < i; j++) {
         print_bignumber(vector[j]);

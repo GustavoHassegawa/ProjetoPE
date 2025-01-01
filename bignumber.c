@@ -101,9 +101,12 @@ BigNumber char_bignumber(char *string) {
 void read_bignumber(BigNumber number) {
     char character;
 
-    while ((character = getchar()) != '\n' && character != EOF)
+    while ((character = getchar()) != '\n' && character != EOF) {
+        if(character == '-')
+            number->negative = true;
         if (character >= '0' && character <= '9') 
             add_digit_end(number, return_digit(character));
+    }
 }
 
 //Imprime um bignumber
@@ -179,29 +182,43 @@ void node_modularizer(BigNumber number) {
 //Faz a soma de um bignumber por um outro bignumber.
 BigNumber sum_bignumber(BigNumber number1, BigNumber number2) {
     Node currentNode1 = number1->end, currentNode2 = number2->end;
+    BigNumber answer;
     short int sum;
-    BigNumber answer = create_bignumber();
 
-    while (currentNode1 != NULL || currentNode2 != NULL) {
+    if (number1->negative == true && number2->negative == false) 
+        return sub_bignumber(number2, number1);
 
-        if (currentNode1 == NULL && currentNode2 != NULL) {
-            sum = currentNode2->digit;
-            currentNode2 = currentNode2->prev;
+    else if (number1->negative == false && number2->negative == true) {
+        number2->negative = false;
+        return sub_bignumber(number1, number2);
+        
+    } else {
+        answer = create_bignumber();
 
-        } else if (currentNode1!= NULL && currentNode2 == NULL) {
-            sum = currentNode1->digit;
-            currentNode1 = currentNode1->prev;
+        if (number1->negative == true) 
+            answer->negative = true;
 
-        } else {
-            sum = currentNode1->digit + currentNode2->digit;
-            currentNode1 = currentNode1->prev;
-            currentNode2 = currentNode2->prev;
+        while (currentNode1 != NULL || currentNode2 != NULL) {
+
+            if (currentNode1 == NULL && currentNode2 != NULL) {
+                sum = currentNode2->digit;
+                currentNode2 = currentNode2->prev;
+
+            } else if (currentNode1!= NULL && currentNode2 == NULL) {
+                sum = currentNode1->digit;
+                currentNode1 = currentNode1->prev;
+
+            } else {
+                sum = currentNode1->digit + currentNode2->digit;
+                currentNode1 = currentNode1->prev;
+                currentNode2 = currentNode2->prev;
+            }
+            add_digit_head(answer, sum);
         }
-        add_digit_head(answer, sum);
-    }        
-    node_modularizer(answer);
 
-    return answer;
+        node_modularizer(answer);
+        return answer;
+    }
 }
 
 //Faz a subtração de um bignumber minuendo por um bignumber subtraendo
@@ -214,6 +231,20 @@ BigNumber sub_bignumber(BigNumber minuend, BigNumber subtrahend) {
         answer = sub_bignumber(subtrahend, minuend);
         answer->negative = true;
         return answer;
+    }
+
+    if (minuend->negative == true && subtrahend->negative == false) {
+        subtrahend->negative = true;
+        answer = sum_bignumber(minuend, subtrahend);
+        return answer;
+    }
+
+    if (minuend->negative == true && subtrahend->negative == true)
+        return sub_bignumber(subtrahend, minuend);
+    
+    if (minuend->negative == false && subtrahend->negative == true) {
+        subtrahend->negative = false;
+        return sum_bignumber(minuend, subtrahend);
     }
 
     answer = create_bignumber();
