@@ -40,6 +40,8 @@ BigNumber sum_bignumber(BigNumber number1, BigNumber number2);
 
 void delete_left_zeros(BigNumber number);
 
+int is_bigger(BigNumber a, BigNumber b);
+
 void node_modularizer(BigNumber number);
 
 BigNumber sub_bignumber(BigNumber minuend, BigNumber subtrahend);

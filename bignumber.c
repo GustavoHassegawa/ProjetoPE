@@ -10,6 +10,7 @@ BigNumber create_bignumber() {
     number->size = 0;
     number->begin = NULL;
     number->end = NULL;
+    number->negative = false;
     return number;
 }
 
@@ -144,6 +145,32 @@ void delete_left_zeros(BigNumber number) {
     }
 }
 
+//Retorna se o número a é maior que o b
+int is_bigger(BigNumber a, BigNumber b) {
+    Node currentNodeA = a->begin;
+    Node currentNodeB = b->begin;
+
+    if (a->size > b->size) 
+        return 1;
+
+    if (a->size < b->size)
+        return 0;
+
+    if (a->size == b->size) {
+        int i = 0;
+        while(currentNodeA != NULL && i < 7) {
+            if (currentNodeA->digit > currentNodeB->digit) 
+                return 1;
+            if (currentNodeA->digit < currentNodeB->digit)
+                return 0;
+            currentNodeA = currentNodeA->next;
+            currentNodeB = currentNodeB->next;
+        }
+    }
+
+    return 0;
+}
+
 /*função modulariza todos os nós do bignumber para que os digitos sejam somente 
  *de 0 a 9*/
 void node_modularizer(BigNumber number) {
@@ -185,8 +212,10 @@ BigNumber sum_bignumber(BigNumber number1, BigNumber number2) {
     BigNumber answer;
     short int sum;
 
-    if (number1->negative == true && number2->negative == false) 
+    if (number1->negative == true && number2->negative == false) {
+        number1->negative =false;
         return sub_bignumber(number2, number1);
+    }
 
     else if (number1->negative == false && number2->negative == true) {
         number2->negative = false;
@@ -227,7 +256,7 @@ BigNumber sub_bignumber(BigNumber minuend, BigNumber subtrahend) {
     short int sub;
     BigNumber answer;
 
-    if (subtrahend->size > minuend->size) {
+    if (is_bigger(subtrahend, minuend)) {
         answer = sub_bignumber(subtrahend, minuend);
         answer->negative = true;
         return answer;
@@ -239,8 +268,10 @@ BigNumber sub_bignumber(BigNumber minuend, BigNumber subtrahend) {
         return answer;
     }
 
-    if (minuend->negative == true && subtrahend->negative == true)
+    if (minuend->negative == true && subtrahend->negative == true) {
+        subtrahend->negative = false;
         return sub_bignumber(subtrahend, minuend);
+    } 
     
     if (minuend->negative == false && subtrahend->negative == true) {
         subtrahend->negative = false;

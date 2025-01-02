@@ -2,29 +2,6 @@
 #include <stdlib.h>
 #include "bignumber.h"
 
-/*
-int main() {
-    BigNumber number1, number2;
-    char sinal;
-
-    number1 = create_bignumber();
-    number2 = create_bignumber();
-
-    read_bignumber(number1);
-    read_bignumber(number2);
-    scanf(" %c", &sinal);
-    
-    BigNumber answer = identify(number1, number2, sinal);
-
-    print_bignumber(answer);
-    erase_bignumber(number1);
-    erase_bignumber(number2);
-    erase_bignumber(answer);
-
-    return 0;    
-}
-*/
-
 int main() {
     BigNumber number1, number2;
     BigNumber *vector = malloc(sizeof(BigNumber));
@@ -37,7 +14,11 @@ int main() {
         number2 = create_bignumber();
 
         read_bignumber(number1);
-        if (number1->begin == NULL || number1->end == NULL) break;
+        if (number1->begin == NULL || number1->end == NULL) {
+            erase_bignumber(number1);
+            erase_bignumber(number2);
+            break;
+        }
         read_bignumber(number2);
         sinal = getchar();
         getchar();
@@ -55,8 +36,6 @@ int main() {
         erase_bignumber(number1);
         erase_bignumber(number2);
     }
-    erase_bignumber(number1);
-    erase_bignumber(number2);
 
     for (int j = 0; j < i; j++) {
         print_bignumber(vector[j]);
