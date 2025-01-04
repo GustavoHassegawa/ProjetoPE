@@ -14,6 +14,21 @@ BigNumber create_bignumber() {
     return number;
 }
 
+BigNumber create_bignumber_zero() {
+    BigNumber number = malloc(sizeof(BigNumber));
+    Node node = malloc(sizeof(node));
+
+    node->digit = 0;
+    node->next = NULL;
+    node->prev = NULL;
+
+    number->size = 1;
+    number->begin = node;
+    number->end = node;
+    number->negative = false;
+    return number;
+}
+
 //Adiciona um novo nó ao BigNumber no final
 void add_digit_end(BigNumber number, int digit) {
     Node new_node = malloc(sizeof(Node));
@@ -54,6 +69,7 @@ void erase_digit_head(BigNumber number) {
     free(number->begin);
     number->begin = temp; 
     number->begin->prev = NULL;
+    number->size--;
 }
 
 //Apaga o digito do final do bignumber
@@ -117,6 +133,7 @@ void print_bignumber(BigNumber number) {
         printf("-");
     while (currentNode != NULL) {
         printf("%d", currentNode->digit);
+
         currentNode = currentNode->next;
     }
     printf("\n");
@@ -149,22 +166,47 @@ void delete_left_zeros(BigNumber number) {
 int is_bigger(BigNumber a, BigNumber b) {
     Node currentNodeA = a->begin;
     Node currentNodeB = b->begin;
-
-    if (a->size > b->size) 
+    if (a->negative == true && b->negative ==false)
+        return 0;
+    if (a->negative == false && b->negative ==true)
         return 1;
 
-    if (a->size < b->size)
-        return 0;
+    if (a->negative == true && b->negative == true) {
+        if (a->size > b->size)
+            return 0;
 
-    if (a->size == b->size) {
-        int i = 0;
-        while(currentNodeA != NULL && i < 7) {
-            if (currentNodeA->digit > currentNodeB->digit) 
-                return 1;
-            if (currentNodeA->digit < currentNodeB->digit)
-                return 0;
-            currentNodeA = currentNodeA->next;
-            currentNodeB = currentNodeB->next;
+        if (a->size < b->size)
+            return 1;
+
+        if (a->size == b->size) {
+            int i = 0;
+            while(currentNodeA != NULL && i < 7) {
+                if (currentNodeA->digit > currentNodeB->digit) 
+                    return 0;
+                if (currentNodeA->digit < currentNodeB->digit)
+                    return 1;
+                currentNodeA = currentNodeA->next;
+                currentNodeB = currentNodeB->next;
+            }
+        }
+    }
+    else {
+        if (a->size > b->size)
+            return 1;
+
+        if (a->size < b->size)
+            return 0;
+
+        if (a->size == b->size) {
+            int i = 0;
+            while(currentNodeA != NULL && i < 7) {
+                if (currentNodeA->digit > currentNodeB->digit) 
+                    return 1;
+                if (currentNodeA->digit < currentNodeB->digit)
+                    return 0;
+                currentNodeA = currentNodeA->next;
+                currentNodeB = currentNodeB->next;
+            }
         }
     }
 
@@ -213,7 +255,7 @@ BigNumber sum_bignumber(BigNumber number1, BigNumber number2) {
     short int sum;
 
     if (number1->negative == true && number2->negative == false) {
-        number1->negative =false;
+        number1->negative = false;
         return sub_bignumber(number2, number1);
     }
 
@@ -250,6 +292,25 @@ BigNumber sum_bignumber(BigNumber number1, BigNumber number2) {
     }
 }
 
+/*Faz a soma de um bignumber por um outro bignumber e armazena o valor no 
+ *segundo termo. Por enquanto implementado somente para positivos*/
+void sum_bignumber_void(BigNumber number, BigNumber out) {
+    Node currentNode1 = number->end, currentNode2 = out->end;
+
+    while (currentNode1 != NULL || currentNode2 != NULL) {
+        if (currentNode1!= NULL && currentNode2 == NULL) {
+            add_digit_head(out, currentNode1->digit);
+            currentNode1 = currentNode1->prev;
+
+        } else {
+            currentNode2->digit += currentNode1->digit;
+            currentNode1 = currentNode1->prev;
+            currentNode2 = currentNode2->prev;
+        }
+    }
+    node_modularizer(out);
+}
+
 //Faz a subtração de um bignumber minuendo por um bignumber subtraendo
 BigNumber sub_bignumber(BigNumber minuend, BigNumber subtrahend) {
     Node currentNodeMinuend = minuend->end, currentNodeSubtra = subtrahend->end;
@@ -263,12 +324,14 @@ BigNumber sub_bignumber(BigNumber minuend, BigNumber subtrahend) {
     }
 
     if (minuend->negative == true && subtrahend->negative == false) {
-        subtrahend->negative = true;
+        minuend->negative = false;
         answer = sum_bignumber(minuend, subtrahend);
+        answer->negative = true;
         return answer;
     }
 
     if (minuend->negative == true && subtrahend->negative == true) {
+        minuend->negative = false;
         subtrahend->negative = false;
         return sub_bignumber(subtrahend, minuend);
     } 
@@ -301,11 +364,56 @@ BigNumber sub_bignumber(BigNumber minuend, BigNumber subtrahend) {
     return answer;
 }
 
+BigNumber multi_bignumber(BigNumber Multiplicand, BigNumber Multiplier) {
+    Node currentNodeMultiplicand = Multiplicand->end;
+    Node currentNodeMultiplier = Multiplier->end;
+    int zerosToAdd = 0, digitMultiplier, digitTemp;
+    BigNumber answer = create_bignumber_zero(), temp;
+
+    if (Multiplicand->size == 1 && currentNodeMultiplicand->digit == 0) 
+        return answer;
+    
+    if (Multiplier->size == 1 && currentNodeMultiplier->digit == 0) 
+        return answer;
+    
+    while (currentNodeMultiplier != NULL) {
+        temp = create_bignumber();
+        digitMultiplier = currentNodeMultiplier->digit;
+
+        while (currentNodeMultiplicand != NULL) {
+            digitTemp = digitMultiplier * currentNodeMultiplicand->digit;
+            add_digit_head(temp, digitTemp);
+            currentNodeMultiplicand = currentNodeMultiplicand->prev;
+        }
+
+        for (int i = 0; i < zerosToAdd; i++)
+            add_digit_end(temp, 0);
+        
+        sum_bignumber_void(temp, answer);
+        erase_bignumber(temp);
+
+        zerosToAdd++;
+        currentNodeMultiplier = currentNodeMultiplier->prev;
+        currentNodeMultiplicand = Multiplicand->end;
+    }
+
+    if (Multiplicand->negative == true && Multiplier->negative == true) 
+        answer->negative = false;
+    else if(Multiplicand->negative == false && Multiplier->negative == false)
+        answer->negative = false;
+    else
+        answer->negative = true;
+
+    return answer;
+}
+
 BigNumber identify(BigNumber numberA, BigNumber numberB, char operation) {
     if (operation == '+')
         return sum_bignumber(numberA, numberB);
     else if (operation == '-')
         return sub_bignumber(numberA, numberB);
+    else if (operation == '*')
+        return multi_bignumber(numberA, numberB);
     else {
         printf("NÃO IMPLEMENTADO");
         return create_bignumber();

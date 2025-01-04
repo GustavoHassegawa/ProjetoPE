@@ -46,6 +46,8 @@ void node_modularizer(BigNumber number);
 
 BigNumber sub_bignumber(BigNumber minuend, BigNumber subtrahend);
 
+BigNumber multi_bignumber(BigNumber Multiplicand, BigNumber Multiplier);
+
 BigNumber identify(BigNumber numberA, BigNumber numberB, char operation);
 
 #endif

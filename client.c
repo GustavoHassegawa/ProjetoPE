@@ -2,6 +2,24 @@
 #include <stdlib.h>
 #include "bignumber.h"
 
+/*
+int main() {
+    BigNumber number1, number2, resposta;
+    number1 = create_bignumber();
+    number2 = create_bignumber();
+
+    read_bignumber(number1);
+    read_bignumber(number2);
+    
+    resposta = multi_bignumber(number1, number2);
+    print_bignumber(resposta);
+
+    erase_bignumber(number1);
+    erase_bignumber(number2);
+    erase_bignumber(resposta);
+}
+*/
+
 int main() {
     BigNumber number1, number2;
     BigNumber *vector = malloc(sizeof(BigNumber));
@@ -46,4 +64,3 @@ int main() {
 
     return 0;
 }
-
