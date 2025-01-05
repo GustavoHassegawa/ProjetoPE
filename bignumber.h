@@ -18,6 +18,8 @@ typedef struct bignumber {
 
 BigNumber create_bignumber();
 
+BigNumber create_bignumber_zero();
+
 void add_digit_end(BigNumber number, int digit);
 
 void add_digit_head(BigNumber number, int digit);
@@ -36,17 +38,25 @@ void print_bignumber(BigNumber number);
 
 void erase_bignumber(BigNumber number);
 
-BigNumber sum_bignumber(BigNumber number1, BigNumber number2);
-
 void delete_left_zeros(BigNumber number);
+
+int is_equal(BigNumber a, BigNumber b);
 
 int is_bigger(BigNumber a, BigNumber b);
 
 void node_modularizer(BigNumber number);
 
+BigNumber sum_bignumber(BigNumber number1, BigNumber number2);
+
+void sum_bignumber_void(BigNumber number, BigNumber out);
+
 BigNumber sub_bignumber(BigNumber minuend, BigNumber subtrahend);
 
+void sub_bignumber_void(BigNumber number, BigNumber out);
+
 BigNumber multi_bignumber(BigNumber Multiplicand, BigNumber Multiplier);
+
+BigNumber div_bignumber(BigNumber dividend, BigNumber divisor);
 
 BigNumber identify(BigNumber numberA, BigNumber numberB, char operation);
 

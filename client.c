@@ -11,7 +11,7 @@ int main() {
     read_bignumber(number1);
     read_bignumber(number2);
     
-    resposta = multi_bignumber(number1, number2);
+    resposta = div_bignumber(number1, number2);
     print_bignumber(resposta);
 
     erase_bignumber(number1);

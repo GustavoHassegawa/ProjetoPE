@@ -92,7 +92,8 @@ int return_digit(char character) {
 }
 
 //Cria um bignumber a partir de uma srting
-/* NÃO UTILIZADO
+//NÃO UTILIZADO
+/*
 BigNumber char_bignumber(char *string) {
     int zero_to_the_left = 1;
     BigNumber number = create_bignumber();
@@ -162,13 +163,33 @@ void delete_left_zeros(BigNumber number) {
     }
 }
 
+int is_equal(BigNumber a, BigNumber b) {
+    Node currentNodeA = a->begin;
+    Node currentNodeB = b->begin;
+    
+    if (a->negative != b->negative)
+        return 0;
+
+    if (a->size != b->size) 
+        return 0;
+    
+    while (currentNodeA != NULL) {
+        if (currentNodeA->digit != currentNodeB->digit)
+            return 0;
+        currentNodeA = currentNodeA->next;
+        currentNodeB = currentNodeB->next;
+    }
+    return 1;
+}
+
 //Retorna se o número a é maior que o b
 int is_bigger(BigNumber a, BigNumber b) {
     Node currentNodeA = a->begin;
     Node currentNodeB = b->begin;
-    if (a->negative == true && b->negative ==false)
+
+    if (a->negative == true && b->negative == false)
         return 0;
-    if (a->negative == false && b->negative ==true)
+    if (a->negative == false && b->negative == true)
         return 1;
 
     if (a->negative == true && b->negative == true) {
@@ -179,8 +200,7 @@ int is_bigger(BigNumber a, BigNumber b) {
             return 1;
 
         if (a->size == b->size) {
-            int i = 0;
-            while(currentNodeA != NULL && i < 7) {
+            while(currentNodeA != NULL) {
                 if (currentNodeA->digit > currentNodeB->digit) 
                     return 0;
                 if (currentNodeA->digit < currentNodeB->digit)
@@ -198,8 +218,7 @@ int is_bigger(BigNumber a, BigNumber b) {
             return 0;
 
         if (a->size == b->size) {
-            int i = 0;
-            while(currentNodeA != NULL && i < 7) {
+            while(currentNodeA != NULL) {
                 if (currentNodeA->digit > currentNodeB->digit) 
                     return 1;
                 if (currentNodeA->digit < currentNodeB->digit)
@@ -298,11 +317,14 @@ void sum_bignumber_void(BigNumber number, BigNumber out) {
     Node currentNode1 = number->end, currentNode2 = out->end;
 
     while (currentNode1 != NULL || currentNode2 != NULL) {
-        if (currentNode1!= NULL && currentNode2 == NULL) {
+        if (currentNode1 != NULL && currentNode2 == NULL) {
             add_digit_head(out, currentNode1->digit);
             currentNode1 = currentNode1->prev;
 
-        } else {
+        } else if (currentNode1 == NULL && currentNode2 != NULL) {
+            break;
+        }
+        else {
             currentNode2->digit += currentNode1->digit;
             currentNode1 = currentNode1->prev;
             currentNode2 = currentNode2->prev;
@@ -364,6 +386,26 @@ BigNumber sub_bignumber(BigNumber minuend, BigNumber subtrahend) {
     return answer;
 }
 
+/*Faz a subtração de um bignumber por um outro bignumber e armazena o valor no 
+ *segundo termo. Por enquanto implementado somente para positivos e quando out 
+ *é maior que o number (out - number)*/
+void sub_bignumber_void(BigNumber number, BigNumber out) {
+    Node currentNode1 = number->end, currentNode2 = out->end;
+
+    while (currentNode1 != NULL || currentNode2 != NULL) {
+        if (currentNode1 == NULL && currentNode2 != NULL) {
+            break;
+        }
+        else {
+            currentNode2->digit -= currentNode1->digit;
+            currentNode1 = currentNode1->prev;
+            currentNode2 = currentNode2->prev;
+        }
+    }
+    node_modularizer(out);
+}
+
+// Faz a multiplicação de um BigNumber por outro.
 BigNumber multi_bignumber(BigNumber Multiplicand, BigNumber Multiplier) {
     Node currentNodeMultiplicand = Multiplicand->end;
     Node currentNodeMultiplier = Multiplier->end;
@@ -407,6 +449,108 @@ BigNumber multi_bignumber(BigNumber Multiplicand, BigNumber Multiplier) {
     return answer;
 }
 
+/*
+BigNumber div_bignumber(BigNumber dividend, BigNumber divisor) {
+    BigNumber quotient = create_bignumber_zero(), temp;
+
+    if (divisor->negative != dividend->negative)
+        quotient->negative = true;
+
+    dividend->negative = false;
+    divisor->negative = false;  
+
+
+    if (is_bigger(divisor, dividend)) {
+        quotient->negative = false;
+        return quotient;
+    }        
+
+    if (is_equal(divisor, dividend)) {
+        quotient->end->digit = 1;
+        return quotient;
+    }
+
+    temp = create_bignumber_zero();
+
+    while(is_bigger(dividend, temp)) {
+        sum_bignumber_void(divisor, temp);
+        quotient->end->digit += 1;
+        node_modularizer(quotient);
+
+        if (is_equal(dividend, temp)) {
+            break;
+        }
+        if (is_bigger(temp, dividend)) {
+            quotient->end->digit -= 1;
+            node_modularizer(quotient);
+            break;
+        }
+    }
+
+    erase_bignumber(temp);
+
+    return quotient;
+}
+*/
+
+
+BigNumber div_bignumber(BigNumber dividend, BigNumber divisor) {
+    BigNumber quotient = create_bignumber(), temp;
+    Node currentNodeDividend;
+    bool first = false;
+    int digitQuotient = 0;
+
+    if (divisor->negative != dividend->negative)
+        quotient->negative = true;
+
+    dividend->negative = false;
+    divisor->negative = false;  
+
+
+    if (is_bigger(divisor, dividend)) {
+        add_digit_end(quotient, 0);
+        quotient->negative = false;
+        return quotient;
+    }        
+
+    if (is_equal(divisor, dividend)) {
+        add_digit_end(quotient, 1);
+        return quotient;
+    }
+
+    temp = create_bignumber();
+    currentNodeDividend = dividend->begin;
+
+    while (currentNodeDividend != NULL) {
+        add_digit_end(temp, currentNodeDividend->digit);
+        currentNodeDividend = currentNodeDividend->next;
+
+        if (first == true) {
+            while (!is_bigger(temp, divisor) && currentNodeDividend != NULL) {
+                add_digit_end(quotient, digitQuotient);
+                add_digit_end(temp, currentNodeDividend->digit);
+                currentNodeDividend = currentNodeDividend->next;
+            }
+            if (currentNodeDividend == NULL && !is_bigger(temp, divisor)) {
+                add_digit_end(quotient, 0);
+            }
+        }
+
+        if (is_bigger(temp, divisor)) {
+            first = true;
+            while (is_bigger(temp, divisor) || is_equal(temp, divisor)) {
+                sub_bignumber_void(divisor, temp);
+                digitQuotient++;
+            }
+            add_digit_end(quotient, digitQuotient);
+            digitQuotient = 0;
+        }
+    }
+
+    erase_bignumber(temp);
+    return quotient;
+}
+
 BigNumber identify(BigNumber numberA, BigNumber numberB, char operation) {
     if (operation == '+')
         return sum_bignumber(numberA, numberB);
@@ -414,6 +558,8 @@ BigNumber identify(BigNumber numberA, BigNumber numberB, char operation) {
         return sub_bignumber(numberA, numberB);
     else if (operation == '*')
         return multi_bignumber(numberA, numberB);
+    else if (operation == '/')
+        return div_bignumber(numberA, numberB);
     else {
         printf("NÃO IMPLEMENTADO");
         return create_bignumber();
