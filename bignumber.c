@@ -449,51 +449,6 @@ BigNumber multi_bignumber(BigNumber Multiplicand, BigNumber Multiplier) {
     return answer;
 }
 
-/*
-BigNumber div_bignumber(BigNumber dividend, BigNumber divisor) {
-    BigNumber quotient = create_bignumber_zero(), temp;
-
-    if (divisor->negative != dividend->negative)
-        quotient->negative = true;
-
-    dividend->negative = false;
-    divisor->negative = false;  
-
-
-    if (is_bigger(divisor, dividend)) {
-        quotient->negative = false;
-        return quotient;
-    }        
-
-    if (is_equal(divisor, dividend)) {
-        quotient->end->digit = 1;
-        return quotient;
-    }
-
-    temp = create_bignumber_zero();
-
-    while(is_bigger(dividend, temp)) {
-        sum_bignumber_void(divisor, temp);
-        quotient->end->digit += 1;
-        node_modularizer(quotient);
-
-        if (is_equal(dividend, temp)) {
-            break;
-        }
-        if (is_bigger(temp, dividend)) {
-            quotient->end->digit -= 1;
-            node_modularizer(quotient);
-            break;
-        }
-    }
-
-    erase_bignumber(temp);
-
-    return quotient;
-}
-*/
-
-
 BigNumber div_bignumber(BigNumber dividend, BigNumber divisor) {
     BigNumber quotient = create_bignumber(), temp;
     Node currentNodeDividend;
