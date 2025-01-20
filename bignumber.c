@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 #include "bignumber.h"
 
 //Cria um numerão vazio
@@ -92,28 +93,26 @@ int return_digit(char character) {
 }
 
 //Cria um bignumber a partir de uma srting
-//NÃO UTILIZADO
-/*
 BigNumber char_bignumber(char *string) {
     int zero_to_the_left = 1;
     BigNumber number = create_bignumber();
     
+    if (string[0] == '-') {
+        number->negative = true;
+    }
+
     for (int i = 0; i < strlen(string); i++) {
+        
         //Verifica se é um zero a esquerda
         if (zero_to_the_left == 1 && return_digit(string[i]) != -1) 
             zero_to_the_left = 0;
 
         if (zero_to_the_left == 0 && return_digit(string[i]) != -1) {
-            add_digit(number, return_digit(string[i]));
-        }
-        else{
-            printf("NOT AN INT");
-            break;
+            add_digit_end(number, return_digit(string[i]));
         }
     }
     return number;
 }
-*/
 
 //Le o bignumber
 void read_bignumber(BigNumber number) {
@@ -406,16 +405,16 @@ void sub_bignumber_void(BigNumber number, BigNumber out) {
 }
 
 // Faz a multiplicação de um BigNumber por outro.
-BigNumber multi_bignumber(BigNumber Multiplicand, BigNumber Multiplier) {
-    Node currentNodeMultiplicand = Multiplicand->end;
-    Node currentNodeMultiplier = Multiplier->end;
+BigNumber multi_bignumber(BigNumber multiplicand, BigNumber multiplier) {
+    Node currentNodeMultiplicand = multiplicand->end;
+    Node currentNodeMultiplier = multiplier->end;
     int zerosToAdd = 0, digitMultiplier, digitTemp;
     BigNumber answer = create_bignumber_zero(), temp;
 
-    if (Multiplicand->size == 1 && currentNodeMultiplicand->digit == 0) 
+    if (multiplicand->size == 1 && currentNodeMultiplicand->digit == 0) 
         return answer;
     
-    if (Multiplier->size == 1 && currentNodeMultiplier->digit == 0) 
+    if (multiplier->size == 1 && currentNodeMultiplier->digit == 0) 
         return answer;
     
     while (currentNodeMultiplier != NULL) {
@@ -436,12 +435,12 @@ BigNumber multi_bignumber(BigNumber Multiplicand, BigNumber Multiplier) {
 
         zerosToAdd++;
         currentNodeMultiplier = currentNodeMultiplier->prev;
-        currentNodeMultiplicand = Multiplicand->end;
+        currentNodeMultiplicand = multiplicand->end;
     }
 
-    if (Multiplicand->negative == true && Multiplier->negative == true) 
+    if (multiplicand->negative == true && multiplier->negative == true) 
         answer->negative = false;
-    else if(Multiplicand->negative == false && Multiplier->negative == false)
+    else if(multiplicand->negative == false && multiplier->negative == false)
         answer->negative = false;
     else
         answer->negative = true;
