@@ -4,11 +4,6 @@
 
 Projeto que compõe a nota do curso de programação estruturada da Universidade Federal do ABC.
 
-## Descrição
-
----
-
-
 ## Recursos
 ---
 
@@ -21,10 +16,6 @@ Projeto que compõe a nota do curso de programação estruturada da Universidade
     - string.h;
 
     - stdlib.h;
-
-## Tecnologias Utilizadas
-
----
 
 ## Relatório 
 
